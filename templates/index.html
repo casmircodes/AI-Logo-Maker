@@ -3,90 +3,545 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gemini Image Generator</title>
+    <title>Gemini Logo Maker</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
             font-family: sans-serif;
-            margin: 20px;
-            background-color: #f4f4f4;
+            margin: 0px;
+            background-color: white;
+            display: flex;
+            flex-direction: column;
+        }
+        .sub-body-container{
             display: flex;
             flex-direction: column;
             align-items: center;
+            width: inherit;
         }
         h1 {
             color: #333;
-            margin-bottom: 20px;
+            margin-bottom: 0px;
         }
         form {
             background-color: #fff;
-            padding: 20px;
+            padding: 16px;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
-            width: 80%;
-            max-width: 500px;
+            margin-bottom: 17px;
+            width: 90%;
+            max-width: 600px;
             display: flex;
             flex-direction: column;
+            align-items: stretch;
+        }
+        .input-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 8px;
+            width: 100%;
+            align-self: center;
+        }
+        .input-wrapper {
+            flex: 1;
         }
         label {
-            margin-bottom: 8px;
+            margin-bottom: 11px;
             color: #555;
             font-weight: bold;
+            display: block;
+            font-size: 15.5px;
         }
-        input[type="text"] {
-            padding: 10px;
-            margin-bottom: 15px;
+        input[type="text"], select {
+            padding: 6px;
             border: 1px solid #ccc;
             border-radius: 4px;
-            font-size: 16px;
+            font-size: 14px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        select {
+            margin-bottom: 5px;
         }
         button[type="submit"] {
             background-color: #007bff;
             color: white;
-            padding: 10px 15px;
+            padding: 12px 15px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
             font-size: 16px;
+            transition: background-color 0.3s ease;
         }
         button[type="submit"]:hover {
             background-color: #0056b3;
         }
-        .image-container {
-            margin-top: 20px;
+
+        /* Styles for the image gallery and individual image cards */
+        .image-gallery { /* Renamed from .img-div for clarity */
+            margin-top: 0px;
             background-color: #fff;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             text-align: center;
+            display: flex;
+            flex-direction: row;
+            justify-content: center; /* Center items if less than full row */
+            gap: 15px; /* Slightly reduced gap for better fit */
+            flex-wrap: wrap; /* Allow wrapping to next line */
+            max-width: 1200px; /* Increased max-width to allow more images on one line */
+            width: 95%; /* Make it take a bit more width on larger screens */
         }
-        .generated-image {
-            max-width: 100%;
-            height: auto;
+
+        .image-card { /* New container for each image and its icon */
+            position: relative; /* Crucial for positioning the icon */
+            width: 260px; /* Slightly reduced width to help fit more */
+            height: 190px; /* Adjusted height proportionally */
             border: 1px solid #ddd;
-            border-radius: 4px;
+            border-radius: 7px;
+            overflow: hidden; /* Ensures content (like download icon) stays within bounds */
+            flex-shrink: 0; /* Prevents shrinking on smaller screens if not wrapped */
+            background-color: #f0f0f0; /* Placeholder background */
         }
+
+        .generated-image {
+            width: 100%; /* Make image fill its container */
+            height: 100%; /* Make image fill its container */
+            object-fit: cover; /* Ensures image covers the area without distortion */
+            border: none; /* Remove border as it's on the card now */
+            border-radius: 7px; /* Inherit from card if desired, or remove */
+        }
+
+        /* Download Icon Styles */
+        .download-icon {
+            position: absolute;
+            top: 10px; /* Distance from top edge */
+            right: 10px; /* Distance from right edge */
+            color: white; /* Icon color */
+            /*background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent background */
+            background: linear-gradient(45deg, black, white); /* 45 degrees */
+            border-radius: 50%; /* Makes the background circular */
+            padding: 8px; /* Padding around the icon */
+            font-size: 1.2em; /* Size of the icon */
+            cursor: pointer;
+            transition: background-color 0.2s ease; /* Keep transition for background hover */
+            z-index: 2; /* Ensure it's above the image */
+            display: flex; /* For centering the icon within its background circle */
+            justify-content: center;
+            align-items: center;
+            text-decoration: none; /* Remove underline from <a> tag */
+        }
+
+        .download-icon:hover {
+            /*background-color: rgba(0, 0, 0, 0.8); /* Darker background on icon hover */
+            background: linear-gradient(45deg, white, black); /* 45 degrees */
+        }
+
         .error-message {
             color: red;
             margin-top: 10px;
         }
+        .btn-grad {
+            background-image: linear-gradient(to right, #000000 0%, #434343 51%, #000000 100%)}
+        .btn-grad {
+            margin: 10px;
+            padding: 10px 45px;
+            text-align: center;
+            text-transform: uppercase;
+            transition: 0.5s;
+            background-size: 200% auto;
+            color: white;
+            box-shadow: 0 0 20px #eee;
+            border-radius: 10px;
+            display: block;
+        }
+        .btn-grad:hover {
+            background-position: right center;
+            color: #fff;
+            text-decoration: none;
+        }
+        .navbar {
+            background-color: lightgray;
+            color: black;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid black;
+        }
+        .navbar-brand {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+        .navbar-links {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+        .navbar-links li {
+            margin-left: 20px;
+        }
+        .navbar-links a {
+            color: black;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .toggle-button {
+            display: none;
+            background: none;
+            border: none;
+            color: black;
+            font-size: 1.5em;
+            cursor: pointer;
+        }
+
+        /* Spinner and Message Container CSS */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white overlay */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000; /* Ensure it's on top */
+            display: none; /* Hidden by default */
+        }
+
+        .spinner {
+            border: 8px solid #f3f3f3; /* Light grey */
+            border-top: 8px solid black;
+            /*border-top: 8px solid #3498db; /* Blue */
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 2s linear infinite;
+            margin-bottom: 20px; /* Space between spinner and text */
+        }
+
+        .loading-message {
+            color: #333;
+            font-size: 1.2em;
+            font-weight: bold;
+            text-align: center;
+            padding: 0 20px; /* Add some padding on smaller screens */
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .input-container {
+                flex-direction: column;
+                gap: 0;
+            }
+            .input-wrapper {
+                width: 100%;
+                margin-bottom: 15px;
+            }
+            .image-gallery {
+                flex-direction: column; /* Stack images on smaller screens */
+                align-items: center; /* Center stacked images */
+                padding: 10px;
+                gap: 15px; /* Keep consistent gap */
+            }
+            .image-card { /* Adjust individual card width on smaller screens */
+                width: 100%;
+                max-width: 300px; /* Optional: limit max width for very large phones */
+                height: 220px; /* Adjust height for mobile */
+            }
+            .navbar-links {
+                display: none;
+                flex-direction: column;
+                width: 100%;
+                text-align: center;
+                background-color: #333;
+                position: absolute;
+                top: 60px;
+                left: 0;
+            }
+            .navbar-links.active {
+                display: flex;
+            }
+            .navbar-links li {
+                margin: 10px 0;
+            }
+            .navbar-links a {
+                color: white;
+            }
+            .toggle-button {
+                display: block;
+            }
+        }
     </style>
 </head>
 <body>
-    <h1>Gemini Image Generator</h1>
-    <form method="POST">
-        <label for="prompt">Enter your prompt:</label>
-        <input type="text" id="prompt" name="prompt" required>
-        <button type="submit">Generate Image</button>
-    </form>
+    <nav class="navbar">
+        <div class="navbar-brand" style="color:black;"><span style="color:orangered;">B</span>RANDA</div>
+        <button class="toggle-button">&#9776;</button>
+        <ul class="navbar-links">
+            <li><a href="#">Contact</a></li>
+        </ul>
+    </nav>
 
-    {% if image_filename %}
-    <div class="image-container">
-        <h2>Generated Image for: {{ prompt }}</h2>
-        <img src="/generated_images/{{ image_filename }}" alt="Generated Image" class="generated-image">
+    <div class="sub-body-container">
+        <h1>Generate Logos With <span style="color:orangered;">AI</span></h1>
+
+        <form method="post" id="logoForm">
+            <div class="input-container">
+                <div class="input-wrapper">
+                    <label for="businessname">Your Business Name:</label>
+                    <input type="text" id="businessname" name="businessname" required value="{{ request.form.businessname if request.form else '' }}"><br>
+                </div>
+                <div class="input-wrapper">
+                    <label for="slogan">Your Slogan(optional):</label>
+                    <input type="text" id="slogan" name="slogan" value="{{ request.form.slogan if request.form else '' }}"><br>
+                </div>
+            </div>
+            <label for="industry">Select Your Industry:</label>
+            
+            <select id="industry" name="industry" required>
+                <option value="">-Select-</option>
+                <optgroup label="Arts, Entertainment & Media">
+                    <option value="Advertising & Marketing" {% if request.form.industry == 'Advertising & Marketing' %}selected{% endif %}>Advertising & Marketing</option>
+                    <option value="Arts & Culture (Museums, Galleries, Performing Arts)" {% if request.form.industry == 'Arts & Culture (Museums, Galleries, Performing Arts)' %}selected{% endif %}>Arts & Culture (Museums, Galleries, Performing Arts)</option>
+                    <option value="Broadcasting & Media Production (TV, Radio, Film)" {% if request.form.industry == 'Broadcasting & Media Production (TV, Radio, Film)' %}selected{% endif %}>Broadcasting & Media Production (TV, Radio, Film)</option>
+                    <option value="Digital Media & Content Creation (Blogging, Podcasting, Influencer)" {% if request.form.industry == 'Digital Media & Content Creation (Blogging, Podcasting, Influencer)' %}selected{% endif %}>Digital Media & Content Creation (Blogging, Podcasting, Influencer)</option>
+                    <option value="Gaming" {% if request.form.industry == 'Gaming' %}selected{% endif %}>Gaming</option>
+                    <option value="Music & Sound Production" {% if request.form.industry == 'Music & Sound Production' %}selected{% endif %}>Music & Sound Production</option>
+                    <option value="Publishing (Books, Magazines, Newspapers)" {% if request.form.industry == 'Publishing (Books, Magazines, Newspapers)' %}selected{% endif %}>Publishing (Books, Magazines, Newspapers)</option>
+                    <option value="Sports & Recreation" {% if request.form.industry == 'Sports & Recreation' %}selected{% endif %}>Sports & Recreation</option>
+                </optgroup>
+
+                <optgroup label="Business & Professional Services">
+                    <option value="Accounting & Auditing" {% if request.form.industry == 'Accounting & Auditing' %}selected{% endif %}>Accounting & Auditing</option>
+                    <option value="Business Consulting" {% if request.form.industry == 'Business Consulting' %}selected{% endif %}>Business Consulting</option>
+                    <option value="Environmental Services" {% if request.form.industry == 'Environmental Services' %}selected{% endif %}>Environmental Services</option>
+                    <option value="Facilities Management" {% if request.form.industry == 'Facilities Management' %}selected{% endif %}>Facilities Management</option>
+                    <option value="Human Resources & Staffing" {% if request.form.industry == 'Human Resources & Staffing' %}selected{% endif %}>Human Resources & Staffing</option>
+                    <option value="Legal Services" {% if request.form.industry == 'Legal Services' %}selected{% endif %}>Legal Services</option>
+                    <option value="Market Research" {% if request.form.industry == 'Market Research' %}selected{% endif %}>Market Research</option>
+                    <option value="Office Administration & Support Services" {% if request.form.industry == 'Office Administration & Support Services' %}selected{% endif %}>Office Administration & Support Services</option>
+                    <option value="Public Relations" {% if request.form.industry == 'Public Relations' %}selected{% endif %}>Public Relations</option>
+                    <option value="Security Services" {% if request.form.industry == 'Security Services' %}selected{% endif %}>Security Services</option>
+                    <option value="Translation & Localization" {% if request.form.industry == 'Translation & Localization' %}selected{% endif %}>Translation & Localization</option>
+                </optgroup>
+
+                <optgroup label="Consumer Goods & Services">
+                    <option value="Apparel & Fashion" {% if request.form.industry == 'Apparel & Fashion' %}selected{% endif %}>Apparel & Fashion</option>
+                    <option value="Automotive Sales & Services (Dealerships, Repair)" {% if request.form.industry == 'Automotive Sales & Services (Dealerships, Repair)' %}selected{% endif %}>Automotive Sales & Services (Dealerships, Repair)</option>
+                    <option value="Beauty & Personal Care" {% if request.form.industry == 'Beauty & Personal Care' %}selected{% endif %}>Beauty & Personal Care</option>
+                    <option value="Childcare Services" {% if request.form.industry == 'Childcare Services' %}selected{% endif %}>Childcare Services</option>
+                    <option value="Consumer Electronics" {% if request.form.industry == 'Consumer Electronics' %}selected{% endif %}>Consumer Electronics</option>
+                    <option value="Dry Cleaning & Laundry Services" {% if request.form.industry == 'Dry Cleaning & Laundry Services' %}selected{% endif %}>Dry Cleaning & Laundry Services</option>
+                    <option value="Food & Beverage Production" {% if request.form.industry == 'Food & Beverage Production' %}selected{% endif %}>Food & Beverage Production</option>
+                    <option value="Home Furnishings & Appliances" {% if request.form.industry == 'Home Furnishings & Appliances' %}selected{% endif %}>Home Furnishings & Appliances</option>
+                    <option value="Pet Services" {% if request.form.industry == 'Pet Services' %}selected{% endif %}>Pet Services</option>
+                    <option value="Retail (General Merchandise)" {% if request.form.industry == 'Retail (General Merchandise)' %}selected{% endif %}>Retail (General Merchandise)</option>
+                    <option value="Specialty Retail (e.g., Jewelry, Sporting Goods)" {% if request.form.industry == 'Specialty Retail (e.g., Jewelry, Sporting Goods)' %}selected{% endif %}>Specialty Retail (e.g., Jewelry, Sporting Goods)</option>
+                </optgroup>
+
+                <optgroup label="Education & Government">
+                    <option value="Child & Family Services" {% if request.form.industry == 'Child & Family Services' %}selected{% endif %}>Child & Family Services</option>
+                    <option value="Colleges & Universities" {% if request.form.industry == 'Colleges & Universities' %}selected{% endif %}>Colleges & Universities</option>
+                    <option value="Government Administration (Federal, State, Local)" {% if request.form.industry == 'Government Administration (Federal, State, Local)' %}selected{% endif %}>Government Administration (Federal, State, Local)</option>
+                    <option value="K-12 Education" {% if request.form.industry == 'K-12 Education' %}selected{% endif %}>K-12 Education</option>
+                    <option value="Libraries & Archives" {% if request.form.industry == 'Libraries & Archives' %}selected{% endif %}>Libraries & Archives</option>
+                    <option value="Military & Defense" {% if request.form.industry == 'Military & Defense' %}selected{% endif %}>Military & Defense</option>
+                    <option value="Non-Profit Organizations" {% if request.form.industry == 'Non-Profit Organizations' %}selected{% endif %}>Non-Profit Organizations</option>
+                    <option value="Public Safety (Police, Fire, EMS)" {% if request.form.industry == 'Public Safety (Police, Fire, EMS)' %}selected{% endif %}>Public Safety (Police, Fire, EMS)</option>
+                    <option value="Vocational & Technical Training" {% if request.form.industry == 'Vocational & Technical Training' %}selected{% endif %}>Vocational & Technical Training</option>
+                </optgroup>
+
+                <optgroup label="Energy, Utilities & Manufacturing">
+                    <option value="Aerospace & Defense Manufacturing" {% if request.form.industry == 'Aerospace & Defense Manufacturing' %}selected{% endif %}>Aerospace & Defense Manufacturing</option>
+                    <option value="Agriculture & Farming" {% if request.form.industry == 'Agriculture & Farming' %}selected{% endif %}>Agriculture & Farming</option>
+                    <option value="Chemical Manufacturing" {% if request.form.industry == 'Chemical Manufacturing' %}selected{% endif %}>Chemical Manufacturing</option>
+                    <option value="Construction & Building Materials" {% if request.form.industry == 'Construction & Building Materials' %}selected{% endif %}>Construction & Building Materials</option>
+                    <option value="Energy (Oil & Gas, Renewables)" {% if request.form.industry == 'Energy (Oil & Gas, Renewables)' %}selected{% endif %}>Energy (Oil & Gas, Renewables)</option>
+                    <option value="Food & Beverage Manufacturing" {% if request.form.industry == 'Food & Beverage Manufacturing' %}selected{% endif %}>Food & Beverage Manufacturing</option>
+                    <option value="Heavy Industry & Machinery" {% if request.form.industry == 'Heavy Industry & Machinery' %}selected{% endif %}>Heavy Industry & Machinery</option>
+                    <option value="Mining & Metals" {% if request.form.industry == 'Mining & Metals' %}selected{% endif %}>Mining & Metals</option>
+                    <option value="Textile Manufacturing" {% if request.form.industry == 'Textile Manufacturing' %}selected{% endif %}>Textile Manufacturing</option>
+                    <option value="Utilities (Electricity, Water, Gas)" {% if request.form.industry == 'Utilities (Electricity, Water, Gas)' %}selected{% endif %}>Utilities (Electricity, Water, Gas)</option>
+                </optgroup>
+
+                <optgroup label="Finance & Real Estate">
+                    <option value="Banking" {% if request.form.industry == 'Banking' %}selected{% endif %}>Banking</option>
+                    <option value="Capital Markets & Investment Banking" {% if request.form.industry == 'Capital Markets & Investment Banking' %}selected{% endif %}>Capital Markets & Investment Banking</option>
+                    <option value="Credit Unions" {% if request.form.industry == 'Credit Unions' %}selected{% endif %}>Credit Unions</option>
+                    <option value="Financial Planning & Wealth Management" {% if request.form.industry == 'Financial Planning & Wealth Management' %}selected{% endif %}>Financial Planning & Wealth Management</option>
+                    <option value="Insurance" {% if request.form.industry == 'Insurance' %}selected{% endif %}>Insurance</option>
+                    <option value="Lending & Mortgage" {% if request.form.industry == 'Lending & Mortgage' %}selected{% endif %}>Lending & Mortgage</option>
+                    <option value="Private Equity & Venture Capital" {% if request.form.industry == 'Private Equity & Venture Capital' %}selected{% endif %}>Private Equity & Venture Capital</option>
+                    <option value="Real Estate (Sales, Development, Property Management)" {% if request.form.industry == 'Real Estate (Sales, Development, Property Management)' %}selected{% endif %}>Real Estate (Sales, Development, Property Management)</option>
+                </optgroup>
+
+                <optgroup label="Healthcare & Biotechnology">
+                    <option value="Biotechnology" {% if request.form.industry == 'Biotechnology' %}selected{% endif %}>Biotechnology</option>
+                    <option value="Dental Services" {% if request.form.industry == 'Dental Services' %}selected{% endif %}>Dental Services</option>
+                    <option value="Hospitals & Healthcare Facilities" {% if request.form.industry == 'Hospitals & Healthcare Facilities' %}selected{% endif %}>Hospitals & Healthcare Facilities</option>
+                    <option value="Medical Devices" {% if request.form.industry == 'Medical Devices' %}selected{% endif %}>Medical Devices</option>
+                    <option value="Mental Healthcare" {% if request.form.industry == 'Mental Healthcare' %}selected{% endif %}>Mental Healthcare</option>
+                    <option value="Nursing & Residential Care" {% if request.form.industry == 'Nursing & Residential Care' %}selected{% endif %}>Nursing & Residential Care</option>
+                    <option value="Pharmaceuticals" {% if request.form.industry == 'Pharmaceuticals' %}selected{% endif %}>Pharmaceuticals</option>
+                    <option value="Physician Offices & Clinics" {% if request.form.industry == 'Physician Offices & Clinics' %}selected{% endif %}>Physician Offices & Clinics</option>
+                    <option value="Veterinary Services" {% if request.form.industry == 'Veterinary Services' %}selected{% endif %}>Veterinary Services</option>
+                </optgroup>
+
+                <optgroup label="Hospitality, Travel & Food Service">
+                    <option value="Catering Services" {% if request.form.industry == 'Catering Services' %}selected{% endif %}>Catering Services</option>
+                    <option value="Event Management & Planning" {% if request.form.industry == 'Event Management & Planning' %}selected{% endif %}>Event Management & Planning</option>
+                    <option value="Hotels & Accommodation" {% if request.form.industry == 'Hotels & Accommodation' %}selected{% endif %}>Hotels & Accommodation</option>
+                    <option value="Restaurants & Food Service (Cafes, Bars)" {% if request.form.industry == 'Restaurants & Food Service (Cafes, Bars)' %}selected{% endif %}>Restaurants & Food Service (Cafes, Bars)</option>
+                    <option value="Tour Operators & Travel Agencies" {% if request.form.industry == 'Tour Operators & Travel Agencies' %}selected{% endif %}>Tour Operators & Travel Agencies</option>
+                </optgroup>
+
+                <optgroup label="Technology & Telecommunications">
+                    <option value="Computer Hardware" {% if request.form.industry == 'Computer Hardware' %}selected{% endif %}>Computer Hardware</option>
+                    <option value="Cybersecurity" {% if request.form.industry == 'Cybersecurity' %}selected{% endif %}>Cybersecurity</option>
+                    <option value="Data & Analytics" {% if request.form.industry == 'Data & Analytics' %}selected{% endif %}>Data & Analytics</option>
+                    <option value="E-commerce & Online Marketplaces" {% if request.form.industry == 'E-commerce & Online Marketplaces' %}selected{% endif %}>E-commerce & Online Marketplaces</option>
+                    <option value="Information Technology Services (IT Consulting, Support)" {% if request.form.industry == 'Information Technology Services (IT Consulting, Support)' %}selected{% endif %}>Information Technology Services (IT Consulting, Support)</option>
+                    <option value="Internet Service Providers" {% if request.form.industry == 'Internet Service Providers' %}selected{% endif %}>Internet Service Providers</option>
+                    <option value="Software Development" {% if request.form.industry == 'Software Development' %}selected{% endif %}>Software Development</option>
+                    <option value="Telecommunications (Mobile, Broadband)" {% if request.form.industry == 'Telecommunications (Mobile, Broadband)' %}selected{% endif %}>Telecommunications (Mobile, Broadband)</option>
+                    <option value="Web Design & Development" {% if request.form.industry == 'Web Design & Development' %}selected{% endif %}>Web Design & Development</option>
+                </optgroup>
+
+                <optgroup label="Transportation & Logistics">
+                    <option value="Air Cargo & Freight" {% if request.form.industry == 'Air Cargo & Freight' %}selected{% endif %}>Air Cargo & Freight</option>
+                    <option value="Airlines & Aviation" {% if request.form.industry == 'Airlines & Aviation' %}selected{% endif %}>Airlines & Aviation</option>
+                    <option value="Logistics & Supply Chain Management" {% if request.form.industry == 'Logistics & Supply Chain Management' %}selected{% endif %}>Logistics & Supply Chain Management</option>
+                    <option value="Marine Shipping" {% if request.form.industry == 'Marine Shipping' %}selected{% endif %}>Marine Shipping</option>
+                    <option value="Rail Transportation" {% if request.form.industry == 'Rail Transportation' %}selected{% endif %}>Rail Transportation</option>
+                    <option value="Road Transportation (Trucking, Passenger)" {% if request.form.industry == 'Road Transportation (Trucking, Passenger)' %}selected{% endif %}>Road Transportation (Trucking, Passenger)</option>
+                    <option value="Warehousing & Storage" {% if request.form.industry == 'Warehousing & Storage' %}selected{% endif %}>Warehousing & Storage</option>
+                </optgroup>
+
+                <option value="Other" {% if request.form.industry == 'Other' %}selected{% endif %}>Other</option>
+            </select><br>
+            <input type="submit" value="Generate Logos" class="btn-grad">
+        </form>
+
+        <div id="loadingOverlay" class="loading-overlay">
+            <div class="spinner"></div>
+            <div class="loading-message">Generating logos, please wait<span style="color: orangered">...</span></div>
+        </div>
+
+        {% if image_filenames %}
+            <h1>Generated Logos</h1>
+            <div class="image-gallery"> {% for filename in image_filenames %}
+                <div class="image-card"> <img src="{{ url_for('serve_image', filename=filename) }}" alt="Generated Image" class="generated-image">
+                    <a href="#" class="download-icon" data-src="{{ url_for('serve_image', filename=filename) }}" data-filename="{{ filename }}">
+                        <i class="fas fa-download"></i>
+                    </a>
+                </div>
+            {% endfor %}
+            </div>
+            <br><br>
+            <!--<h2>Generated Images for prompt: {{ prompt }}</h2>-->
+        {% elif error %}
+            <p style="color:red;">{{ error }}</p>
+        {% endif %}
     </div>
-    {% elif error %}
-    <p class="error-message">{{ error }}</p>
-    {% endif %}
+
+    <script>
+        const toggleButton = document.querySelector('.toggle-button');
+        const navbarLinks = document.querySelector('.navbar-links');
+        const logoForm = document.getElementById('logoForm');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+
+        // Add 'required' to industry select and business name for basic validation
+        document.getElementById('industry').setAttribute('required', 'required');
+        document.getElementById('businessname').setAttribute('required', 'required');
+
+
+        toggleButton.addEventListener('click', () => {
+            navbarLinks.classList.toggle('active');
+        });
+
+        // Add an event listener to the form's submit event
+        logoForm.addEventListener('submit', function(event) {
+            // Check form validity before proceeding
+            if (!logoForm.checkValidity()) {
+                // If form is invalid, let the browser handle validation messages
+                return;
+            }
+
+            // Prevent the default form submission immediately
+            event.preventDefault();
+
+            // Show the entire loading overlay (spinner + text)
+            loadingOverlay.style.display = 'flex';
+
+            // Optionally, hide previously generated images and headings
+            const generatedLogosHeading = document.querySelector('h1:last-of-type');
+            if (generatedLogosHeading && generatedLogosHeading.textContent === 'Generated Logos') {
+                generatedLogosHeading.style.display = 'none';
+            }
+            // Use the new class 'image-gallery' for the main container
+            const imageGallery = document.querySelector('.image-gallery');
+            if (imageGallery) {
+                imageGallery.style.display = 'none'; // Hide the entire gallery
+            }
+            const generatedPromptHeading = document.querySelector('h2');
+            if (generatedPromptHeading) {
+                generatedPromptHeading.style.display = 'none';
+            }
+            // Also hide the error message if it was present
+            const errorMessage = document.querySelector('p[style="color:red;"]');
+            if (errorMessage) {
+                errorMessage.style.display = 'none';
+            }
+
+            // Programmatically submit the form after a short delay
+            setTimeout(() => {
+                logoForm.submit();
+            }, 100);
+        });
+
+        window.addEventListener('load', () => {
+            loadingOverlay.style.display = 'none';
+        });
+
+        // JavaScript for download functionality
+        document.addEventListener('DOMContentLoaded', () => {
+            const downloadIcons = document.querySelectorAll('.download-icon');
+
+            downloadIcons.forEach(icon => {
+                icon.addEventListener('click', function(event) {
+                    event.preventDefault(); // Prevent default link behavior (e.g., navigating to #)
+
+                    const imageUrl = this.getAttribute('data-src');
+                    const filename = this.getAttribute('data-filename'); // Get filename from data attribute
+
+                    if (imageUrl) {
+                        // Create a temporary anchor element
+                        const a = document.createElement('a');
+                        a.href = imageUrl;
+                        // Set the download attribute with the desired filename
+                        // Fallback to a generic name if data-filename is not provided
+                        a.download = filename || 'generated_logo.png';
+
+                        // Append to body, trigger click, and remove
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                    } else {
+                        console.error('Image URL not found for download.');
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>
